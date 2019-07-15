@@ -25,7 +25,7 @@ const getNetworkInfoFailure = error => ({
 
 const getNetworkInfo = () => {
   return async dispatch => {
-    dispatch(getNetworkInfoBegin);
+    dispatch(getNetworkInfoBegin());
 
     try {
       const web3 = new Web3(Web3.givenProvider || RPC_URI);

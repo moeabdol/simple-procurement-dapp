@@ -24,7 +24,7 @@ const getBlockchainInfoFailure = error => ({
 
 const getBlockchainInfo = () => {
   return async dispatch => {
-    dispatch(getBlockchainInfoBegin);
+    dispatch(getBlockchainInfoBegin());
 
     try {
       const web3 = new Web3(Web3.givenProvider || RPC_URI);
