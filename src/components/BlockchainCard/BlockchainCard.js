@@ -28,27 +28,10 @@ class BlockchainCard extends Component {
             <b>Current Block:</b> {currentBlock}
           </p>
           <p className="card-text mb-0">
-            <b>Coinbase Address:</b>
-            <br />
-            <span>{coinbase}</span>
+            <b>Coinbase Address:</b> {coinbase}
           </p>
           <p className="card-text mb-0">
             <b>Number of Accounts:</b> {accounts && accounts.length}
-          </p>
-          <p className="card-text mb-0">
-            <b>Accounts:</b>
-            <br />
-            {accounts &&
-              accounts.map((account, index) => {
-                return (
-                  <React.Fragment key={index}>
-                    <span>
-                      {index + 1}. {account}
-                    </span>
-                    <br />
-                  </React.Fragment>
-                );
-              })}
           </p>
           <p className="card-text mb-0">
             <b>Mining:</b> {isMining ? 'True' : 'False'}
