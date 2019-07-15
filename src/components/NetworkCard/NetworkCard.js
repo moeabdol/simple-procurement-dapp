@@ -1,45 +1,17 @@
 import React, { Component } from 'react';
 
-import Web3 from 'web3';
-import _ from 'lodash';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
-const RPC_URI = process.env.REACT_APP_RPC_URI;
+import { getNetworkInfo } from '../../store/actions/NetworkCard/NetworkCardActions';
 
 class NetworkCard extends Component {
-  constructor(props) {
-    super(props);
-    this.web3 = new Web3(RPC_URI);
-    this.state = {
-      networkId: null,
-      networkType: null,
-      isListening: null,
-      peerCount: null,
-    };
-  }
-
   componentDidMount() {
-    this.loadNetworkData();
+    this.props.getNetworkInfo();
   }
-
-  loadNetworkData = async () => {
-    try {
-      const networkId = await this.web3.eth.net.getId();
-      const networkType = await this.web3.eth.net.getNetworkType();
-      const isListening = await this.web3.eth.net.isListening();
-      const peerCount = await this.web3.eth.net.getPeerCount();
-      this.setState({
-        networkId,
-        networkType: _.capitalize(networkType),
-        isListening,
-        peerCount,
-      });
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   render() {
-    const { networkId, networkType, isListening, peerCount } = this.state;
+    const { networkId, networkType, isListening, peerCount } = this.props;
 
     return (
       <div className="card">
@@ -63,4 +35,29 @@ class NetworkCard extends Component {
   }
 }
 
-export default NetworkCard;
+NetworkCard.propTypes = {
+  loading: PropTypes.bool,
+  networkId: PropTypes.number,
+  networkType: PropTypes.string,
+  isListening: PropTypes.bool,
+  peerCount: PropTypes.number,
+  getNetworkInfo: PropTypes.func,
+};
+
+const mapStateToProps = state => ({
+  loading: state.networkCardState.loading,
+  networkId: state.networkCardState.networkId,
+  networkType: state.networkCardState.networkType,
+  isListening: state.networkCardState.isListening,
+  peerCount: state.networkCardState.peerCount,
+  error: state.networkCardState.error,
+});
+
+const mapDispatchToProps = dispatch => ({
+  getNetworkInfo: () => dispatch(getNetworkInfo()),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(NetworkCard);

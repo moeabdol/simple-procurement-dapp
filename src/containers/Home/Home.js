@@ -8,11 +8,11 @@ class Home extends Component {
     return (
       <div className="container">
         <div className="row">
-          <div className="col-6">
+          <div className="col">
             <NetworkCard />
           </div>
 
-          <div className="col-6">
+          <div className="col">
             <BlockchainCard />
           </div>
         </div>

@@ -1,47 +1,14 @@
 import React, { Component } from 'react';
 
-import Web3 from 'web3';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
-const RPC_URI = process.env.REACT_APP_RPC_URI;
+import { getBlockchainInfo } from '../../store/actions/BlockchainCard/BlockchainCardActions';
 
 class BlockchainCard extends Component {
-  constructor(props) {
-    super(props);
-    this.web3 = new Web3(RPC_URI);
-    this.state = {
-      currentBlock: null,
-      accounts: null,
-      coinbase: null,
-      isMining: null,
-      hashRate: null,
-      gasPrice: null,
-    };
-  }
-
   componentDidMount() {
-    this.loadBlockchainData();
+    this.props.getBlockchainInfo();
   }
-
-  loadBlockchainData = async () => {
-    try {
-      const currentBlock = await this.web3.eth.getBlockNumber();
-      const accounts = await this.web3.eth.getAccounts();
-      const coinbase = await this.web3.eth.getCoinbase();
-      const isMining = await this.web3.eth.isMining();
-      const hashRate = await this.web3.eth.getHashrate();
-      const gasPrice = await this.web3.eth.getGasPrice();
-      this.setState({
-        currentBlock,
-        accounts,
-        coinbase,
-        isMining,
-        hashRate,
-        gasPrice,
-      });
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   render() {
     const {
@@ -51,7 +18,7 @@ class BlockchainCard extends Component {
       isMining,
       hashRate,
       gasPrice,
-    } = this.state;
+    } = this.props;
 
     return (
       <div className="card">
@@ -98,4 +65,32 @@ class BlockchainCard extends Component {
   }
 }
 
-export default BlockchainCard;
+BlockchainCard.propTypes = {
+  getBlockchainInfo: PropTypes.func,
+  currentBlock: PropTypes.number,
+  accounts: PropTypes.array,
+  coinbase: PropTypes.string,
+  isMining: PropTypes.bool,
+  hashRate: PropTypes.number,
+  gasPrice: PropTypes.string,
+};
+
+const mapStateToProps = state => ({
+  loading: state.blockchainCardState.loading,
+  currentBlock: state.blockchainCardState.currentBlock,
+  accounts: state.blockchainCardState.accounts,
+  coinbase: state.blockchainCardState.coinbase,
+  isMining: state.blockchainCardState.isMining,
+  hashPrice: state.blockchainCardState.hashPrice,
+  gasPrice: state.blockchainCardState.gasPrice,
+  error: state.blockchainCardState.error,
+});
+
+const mapDispatchToProps = dispatch => ({
+  getBlockchainInfo: () => dispatch(getBlockchainInfo()),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(BlockchainCard);
