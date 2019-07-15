@@ -27,7 +27,7 @@ const getBlockchainInfo = () => {
     dispatch(getBlockchainInfoBegin);
 
     try {
-      const web3 = new Web3(RPC_URI);
+      const web3 = new Web3(Web3.givenProvider || RPC_URI);
       const currentBlock = await web3.eth.getBlockNumber();
       const accounts = await web3.eth.getAccounts();
       const coinbase = await web3.eth.getCoinbase();

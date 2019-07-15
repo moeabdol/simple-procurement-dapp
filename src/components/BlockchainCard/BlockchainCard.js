@@ -64,9 +64,8 @@ const mapStateToProps = state => ({
   accounts: state.blockchainCardState.accounts,
   coinbase: state.blockchainCardState.coinbase,
   isMining: state.blockchainCardState.isMining,
-  hashPrice: state.blockchainCardState.hashPrice,
+  hashRate: state.blockchainCardState.hashRate,
   gasPrice: state.blockchainCardState.gasPrice,
-  error: state.blockchainCardState.error,
 });
 
 const mapDispatchToProps = dispatch => ({

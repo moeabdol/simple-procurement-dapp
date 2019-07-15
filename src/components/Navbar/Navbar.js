@@ -26,6 +26,24 @@ const Navbar = () => (
           </NavLink>
         </li>
       </ul>
+
+      <ul className="navbar-nav ml-auto">
+        <li className="nav-item dropdown active">
+          <Link
+            to=""
+            className="nav-link dropdown-toggle"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false">
+            Account
+          </Link>
+          <div className="dropdown-menu dropdown-menu-right">
+            <Link to="" className="dropdown-item">
+              &nbsp; Sign Out
+            </Link>
+          </div>
+        </li>
+      </ul>
     </div>
   </nav>
 );

@@ -28,7 +28,7 @@ const getNetworkInfo = () => {
     dispatch(getNetworkInfoBegin);
 
     try {
-      const web3 = new Web3(RPC_URI);
+      const web3 = new Web3(Web3.givenProvider || RPC_URI);
       const networkId = await web3.eth.net.getId();
       const networkType = await web3.eth.net.getNetworkType();
       const isListening = await web3.eth.net.isListening();
