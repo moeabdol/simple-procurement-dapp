@@ -1,11 +1,11 @@
 import { combineReducers } from 'redux';
 
-import networkCardReducer from './NetworkCard/NetworkCardReducer';
-import blockchainCardReducer from './BlockchainCard/BlockchainCardReducer';
+import homeReducer from './Home/HomeReducer';
+import navbarReducer from './Navbar/NavbarReducer';
 
 const rootReducer = combineReducers({
-  networkCardState: networkCardReducer,
-  blockchainCardState: blockchainCardReducer,
+  homeState: homeReducer,
+  navbarState: navbarReducer,
 });
 
 export default rootReducer;

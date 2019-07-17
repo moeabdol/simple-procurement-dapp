@@ -3,13 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { getNetworkInfo } from '../../store/actions/NetworkCard/NetworkCardActions';
-
 class NetworkCard extends Component {
-  componentDidMount() {
-    this.props.getNetworkInfo();
-  }
-
   render() {
     const { networkId, networkType, isListening, peerCount } = this.props;
 
@@ -41,23 +35,15 @@ NetworkCard.propTypes = {
   networkType: PropTypes.string,
   isListening: PropTypes.bool,
   peerCount: PropTypes.number,
-  getNetworkInfo: PropTypes.func,
 };
 
 const mapStateToProps = state => ({
-  loading: state.networkCardState.loading,
-  networkId: state.networkCardState.networkId,
-  networkType: state.networkCardState.networkType,
-  isListening: state.networkCardState.isListening,
-  peerCount: state.networkCardState.peerCount,
-  error: state.networkCardState.error,
+  loading: state.homeState.loading,
+  networkId: state.homeState.networkId,
+  networkType: state.homeState.networkType,
+  isListening: state.homeState.isListening,
+  peerCount: state.homeState.peerCount,
+  error: state.homeState.error,
 });
 
-const mapDispatchToProps = dispatch => ({
-  getNetworkInfo: () => dispatch(getNetworkInfo()),
-});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(NetworkCard);
+export default connect(mapStateToProps)(NetworkCard);

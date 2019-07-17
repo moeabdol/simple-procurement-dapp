@@ -3,13 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { getBlockchainInfo } from '../../store/actions/BlockchainCard/BlockchainCardActions';
-
 class BlockchainCard extends Component {
-  componentDidMount() {
-    this.props.getBlockchainInfo();
-  }
-
   render() {
     const {
       currentBlock,
@@ -49,7 +43,6 @@ class BlockchainCard extends Component {
 }
 
 BlockchainCard.propTypes = {
-  getBlockchainInfo: PropTypes.func,
   currentBlock: PropTypes.number,
   accounts: PropTypes.array,
   coinbase: PropTypes.string,
@@ -59,20 +52,13 @@ BlockchainCard.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  loading: state.blockchainCardState.loading,
-  currentBlock: state.blockchainCardState.currentBlock,
-  accounts: state.blockchainCardState.accounts,
-  coinbase: state.blockchainCardState.coinbase,
-  isMining: state.blockchainCardState.isMining,
-  hashRate: state.blockchainCardState.hashRate,
-  gasPrice: state.blockchainCardState.gasPrice,
+  loading: state.homeState.loading,
+  currentBlock: state.homeState.currentBlock,
+  accounts: state.homeState.accounts,
+  coinbase: state.homeState.coinbase,
+  isMining: state.homeState.isMining,
+  hashRate: state.homeState.hashRate,
+  gasPrice: state.homeState.gasPrice,
 });
 
-const mapDispatchToProps = dispatch => ({
-  getBlockchainInfo: () => dispatch(getBlockchainInfo()),
-});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(BlockchainCard);
+export default connect(mapStateToProps)(BlockchainCard);
