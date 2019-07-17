@@ -3,3 +3,12 @@ body {
   margin: 0;
   padding-top: 5rem;
 }
+
+.react-datepicker-wrapper,
+.react-datepicker__input-container {
+  width: 100%;
+}
+
+.react-datepicker-popper {
+  z-index: 9999 !important;
+}

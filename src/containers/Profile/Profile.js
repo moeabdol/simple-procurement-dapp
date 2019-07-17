@@ -8,6 +8,7 @@ import _ from 'lodash';
 import accounts from '../../assets/data/data';
 import { setDefaultAccount } from '../../store/actions/Navbar/NavbarActions';
 import { AccountTypeSpan } from './ProfileStyles';
+import CreatePOModal from '../../components/CreatePOModal/CreatePOModal';
 
 class Profile extends Component {
   componentDidMount() {
@@ -30,10 +31,6 @@ class Profile extends Component {
     }
   }
 
-  onCreatePurchaseOrderClick = () => {
-    console.log('clicked po');
-  };
-
   render() {
     const { defaultAccount } = this.props;
 
@@ -47,13 +44,20 @@ class Profile extends Component {
                 ({_.capitalize(defaultAccount.type)})
               </AccountTypeSpan>
             </div>
+            <div className="h6 text-muted">
+              Address: {defaultAccount.address}
+            </div>
 
             {defaultAccount.type === 'buyer' && (
-              <button
-                className="btn btn-primary"
-                onClick={this.onCreatePurchaseOrderClick}>
-                Create Purchase Order
-              </button>
+              <React.Fragment>
+                <button
+                  className="btn btn-primary"
+                  data-toggle="modal"
+                  data-target="#poModal">
+                  Create Purchase Order
+                </button>
+                <CreatePOModal id="poModal" />
+              </React.Fragment>
             )}
           </div>
         )}
