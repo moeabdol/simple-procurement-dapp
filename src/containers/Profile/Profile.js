@@ -9,6 +9,7 @@ import accounts from '../../assets/data/data';
 import { setDefaultAccount } from '../../store/actions/Navbar/NavbarActions';
 import { AccountTypeSpan } from './ProfileStyles';
 import CreatePOModal from '../../components/CreatePOModal/CreatePOModal';
+import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
 
 class Profile extends Component {
   componentDidMount() {
@@ -32,10 +33,11 @@ class Profile extends Component {
   }
 
   render() {
-    const { defaultAccount } = this.props;
+    const { loading, defaultAccount } = this.props;
 
     return (
       <React.Fragment>
+        {loading && <LoadingSpinner />}
         {defaultAccount && (
           <div className="container">
             <div className="h3">
@@ -71,9 +73,11 @@ Profile.propTypes = {
   match: PropTypes.object,
   setDefaultAccount: PropTypes.func,
   history: PropTypes.object,
+  loading: PropTypes.bool,
 };
 
 const mapStateToProps = state => ({
+  loading: state.createPOModalState.loading,
   defaultAccount: state.navbarState.defaultAccount,
 });
 

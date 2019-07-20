@@ -8,6 +8,7 @@ import {
   ON_SEND_PO_BEGIN,
   ON_SEND_PO_SUCCESS,
   ON_SEND_PO_FAILURE,
+  CLEAR_PO,
 } from '../';
 import Web3Service from '../../../utils/Web3Service';
 
@@ -51,6 +52,10 @@ const onSellersAddressesChange = sellers => {
   };
 };
 
+const clearPO = () => ({
+  type: CLEAR_PO,
+});
+
 const sendPO = (buyerAddress, rfp, rfpDeadline, bidType, sellersAddresses) => {
   return async dispatch => {
     dispatch(onSendPOBegin());
@@ -81,7 +86,8 @@ const sendPO = (buyerAddress, rfp, rfpDeadline, bidType, sellersAddresses) => {
           bidType,
           sellersAddresses
         )
-        .send({ from: buyerAddress, gasLimit: 3000000 });
+        .send({ from: buyerAddress, gas: 3000000 });
+      tx.gasUsed = web3.utils.hexToNumberString(tx.gasUsed);
       dispatch(onSendPOSuccess(tx));
     } catch (error) {
       dispatch(onSendPOFailure(error));
@@ -95,4 +101,5 @@ export {
   onBidTypeChange,
   onSellersAddressesChange,
   sendPO,
+  clearPO,
 };

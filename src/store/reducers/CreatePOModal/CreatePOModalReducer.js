@@ -6,6 +6,7 @@ import {
   ON_SEND_PO_BEGIN,
   ON_SEND_PO_SUCCESS,
   ON_SEND_PO_FAILURE,
+  CLEAR_PO,
 } from '../../actions';
 
 const initialState = {
@@ -57,6 +58,8 @@ const createPOModalReducer = (state = initialState, action) => {
         loading: false,
         error: action.payload.error,
       };
+    case CLEAR_PO:
+      return initialState;
     default:
       return state;
   }

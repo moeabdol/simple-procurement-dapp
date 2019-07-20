@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import Swal from 'sweetalert2';
 
 import accounts from '../../assets/data/data';
 import {
@@ -12,6 +13,7 @@ import {
   onBidTypeChange,
   onSellersAddressesChange,
   sendPO,
+  clearPO,
 } from '../../store/actions/CreatePOModal/CreatePOModalActions';
 
 accounts.forEach(account => (account.selected = false));
@@ -22,14 +24,31 @@ class CreatePOModal extends Component {
     sellers,
   };
 
-  componentDidUpdate(prevProps) {
+  async componentDidUpdate(prevProps) {
     const { result, error } = this.props;
     if (result && prevProps.result !== result) {
-      console.log(result);
+      await Swal.fire({
+        type: 'success',
+        title: 'Order Created Successfuly!',
+        width: '750px',
+        html: `
+          <small class="float-left"><b>Sender Address:</b>&nbsp;${result.from}</small><br />
+          <small class="float-left"><b>Reciever Address:</b>&nbsp;${result.to}</small><br />
+          <small class="float-left"><b>Transaction Hash:</b>&nbsp;${result.transactionHash}</small><br />
+          <small class="float-left"><b>Block Number:</b>&nbsp;${result.blockNumber}</small><br />
+          <small class="float-left"><b>Block Hash:</b>&nbsp;${result.blockHash}</small><br />
+          <small class="float-left"><b>Gas Used:</b>&nbsp;${result.gasUsed}</small>
+        `,
+      });
+      this.props.clearPO();
     }
 
     if (error && prevProps.error !== error) {
-      console.log(error);
+      Swal.fire({
+        type: 'error',
+        title: 'Something went wrong!',
+        text: error,
+      });
     }
   }
 
@@ -214,6 +233,7 @@ CreatePOModal.propTypes = {
   loading: PropTypes.bool,
   result: PropTypes.object,
   error: PropTypes.object,
+  clearPO: PropTypes.func,
 };
 
 const mapStateToProps = state => ({
@@ -236,6 +256,7 @@ const mapDispatchToProps = dispatch => ({
     dispatch(onSellersAddressesChange(sellers)),
   sendPO: (buyerAddress, rfp, rfpDeadline, bidType, sellersAddresses) =>
     dispatch(sendPO(buyerAddress, rfp, rfpDeadline, bidType, sellersAddresses)),
+  clearPO: () => dispatch(clearPO()),
 });
 
 export default connect(
