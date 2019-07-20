@@ -10,6 +10,7 @@ import './App.css';
 import Navbar from './components/Navbar/Navbar';
 import Home from './containers/Home/Home';
 import Profile from './containers/Profile/Profile';
+import Orders from './containers/Orders/Orders';
 
 class App extends Component {
   render() {
@@ -17,6 +18,7 @@ class App extends Component {
       <BrowserRouter>
         <Navbar />
         <Switch>
+          <Route path="/orders" component={Orders} />
           <Route path="/profile/:address" component={Profile} />
           <Route exact path="/" component={Home} />
         </Switch>

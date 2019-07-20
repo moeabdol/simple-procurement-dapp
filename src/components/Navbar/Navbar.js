@@ -47,6 +47,11 @@ class Navbar extends Component {
                 Home
               </NavLink>
             </li>
+            <li className="nav-item">
+              <NavLink exact to="/orders" className="nav-link">
+                Orders
+              </NavLink>
+            </li>
           </ul>
 
           {defaultAccount && (
