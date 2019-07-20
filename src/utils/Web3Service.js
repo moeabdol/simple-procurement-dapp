@@ -8,7 +8,7 @@ class Web3Service {
 
     const RPC_URI = process.env.REACT_APP_RPC_URI;
     try {
-      Web3Service.instance = new Web3(Web3.givenProvider || RPC_URI);
+      Web3Service.instance = new Web3(RPC_URI);
       return Web3Service.instance;
     } catch (error) {
       throw error;

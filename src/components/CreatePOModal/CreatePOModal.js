@@ -7,11 +7,11 @@ import 'react-datepicker/dist/react-datepicker.css';
 
 import accounts from '../../assets/data/data';
 import {
-  onBuyerAddressChange,
   onRfpChange,
   onRfpDeadlineChange,
   onBidTypeChange,
   onSellersAddressesChange,
+  sendPO,
 } from '../../store/actions/CreatePOModal/CreatePOModalActions';
 
 accounts.forEach(account => (account.selected = false));
@@ -22,8 +22,15 @@ class CreatePOModal extends Component {
     sellers,
   };
 
-  componentDidMount() {
-    this.props.onBuyerAddressChange(this.props.defaultAccount.address);
+  componentDidUpdate(prevProps) {
+    const { result, error } = this.props;
+    if (result && prevProps.result !== result) {
+      console.log(result);
+    }
+
+    if (error && prevProps.error !== error) {
+      console.log(error);
+    }
   }
 
   onSellerClick = seller => {
@@ -36,12 +43,31 @@ class CreatePOModal extends Component {
     );
   };
 
-  render() {
+  submitCreatePO = e => {
+    e.preventDefault();
     const {
-      buyerAddress,
+      defaultAccount,
       rfp,
       rfpDeadline,
       bidType,
+      sellersAddresses,
+    } = this.props;
+    this.props.sendPO(
+      defaultAccount.address,
+      rfp,
+      rfpDeadline,
+      bidType,
+      sellersAddresses
+    );
+  };
+
+  render() {
+    const {
+      defaultAccount,
+      rfp,
+      rfpDeadline,
+      bidType,
+      sellersAddresses,
       onRfpChange,
       onRfpDeadlineChange,
       onBidTypeChange,
@@ -80,7 +106,7 @@ class CreatePOModal extends Component {
                     className="form-control"
                     id="buyerAddress"
                     disabled
-                    value={buyerAddress}
+                    value={defaultAccount.address}
                   />
                 </div>
                 <div className="form-group">
@@ -148,7 +174,15 @@ class CreatePOModal extends Component {
               </form>
             </div>
             <div className="modal-footer">
-              <button type="button" className="btn btn-primary">
+              <button
+                type="button"
+                className="btn btn-primary"
+                disabled={
+                  defaultAccount.address === '' ||
+                  rfp === '' ||
+                  (bidType === 'private' && sellersAddresses.length === 0)
+                }
+                onClick={this.submitCreatePO}>
                 Send Order
               </button>
               <button
@@ -168,36 +202,40 @@ class CreatePOModal extends Component {
 CreatePOModal.propTypes = {
   id: PropTypes.string,
   defaultAccount: PropTypes.object,
-  buyerAddress: PropTypes.string,
   rfp: PropTypes.string,
   rfpDeadline: PropTypes.instanceOf(Date),
   bidType: PropTypes.string,
   sellersAddresses: PropTypes.array,
-  onBuyerAddressChange: PropTypes.func,
   onRfpChange: PropTypes.func,
   onRfpDeadlineChange: PropTypes.func,
   onBidTypeChange: PropTypes.func,
   onSellersAddressesChange: PropTypes.func,
+  sendPO: PropTypes.func,
+  loading: PropTypes.bool,
+  result: PropTypes.object,
+  error: PropTypes.object,
 };
 
 const mapStateToProps = state => ({
   defaultAccount: state.navbarState.defaultAccount,
-  buyerAddress: state.createPOModalState.buyerAddress,
   rfp: state.createPOModalState.rfp,
   rfpDeadline: state.createPOModalState.rfpDeadline,
   bidType: state.createPOModalState.bidType,
   sellersAddresses: state.createPOModalState.sellersAddresses,
+  loading: state.createPOModalState.loading,
+  result: state.createPOModalState.result,
+  error: state.createPOModalState.error,
 });
 
 const mapDispatchToProps = dispatch => ({
-  onBuyerAddressChange: buyerAddress =>
-    dispatch(onBuyerAddressChange(buyerAddress)),
   onRfpChange: rfp => dispatch(onRfpChange(rfp)),
   onRfpDeadlineChange: rfpDeadline =>
     dispatch(onRfpDeadlineChange(rfpDeadline)),
   onBidTypeChange: bidType => dispatch(onBidTypeChange(bidType)),
   onSellersAddressesChange: sellers =>
     dispatch(onSellersAddressesChange(sellers)),
+  sendPO: (buyerAddress, rfp, rfpDeadline, bidType, sellersAddresses) =>
+    dispatch(sendPO(buyerAddress, rfp, rfpDeadline, bidType, sellersAddresses)),
 });
 
 export default connect(

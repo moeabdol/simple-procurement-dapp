@@ -1,26 +1,25 @@
 import {
-  ON_BUYER_ADDRESS_CHANGE,
   ON_RFP_CHANGE,
   ON_RFP_DEADLINE_CHANGE,
   ON_BID_TYPE_CHANGE,
   ON_SELLERS_ADDRESSES_CHANGE,
+  ON_SEND_PO_BEGIN,
+  ON_SEND_PO_SUCCESS,
+  ON_SEND_PO_FAILURE,
 } from '../../actions';
 
 const initialState = {
-  buyerAddress: '',
   rfp: '',
   rfpDeadline: new Date(),
   bidType: 'public',
   sellersAddresses: [],
+  loading: false,
+  result: null,
+  error: null,
 };
 
 const createPOModalReducer = (state = initialState, action) => {
   switch (action.type) {
-    case ON_BUYER_ADDRESS_CHANGE:
-      return {
-        ...state,
-        buyerAddress: action.payload.buyerAddress,
-      };
     case ON_RFP_CHANGE:
       return {
         ...state,
@@ -40,6 +39,23 @@ const createPOModalReducer = (state = initialState, action) => {
       return {
         ...state,
         sellersAddresses: action.payload.sellersAddresses,
+      };
+    case ON_SEND_PO_BEGIN:
+      return {
+        ...state,
+        loading: true,
+      };
+    case ON_SEND_PO_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        result: action.payload.result,
+      };
+    case ON_SEND_PO_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload.error,
       };
     default:
       return state;
