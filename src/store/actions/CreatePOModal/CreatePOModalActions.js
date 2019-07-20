@@ -1,6 +1,7 @@
 import moment from 'moment';
 
 import {
+  ON_NAME_CHANGE,
   ON_RFP_CHANGE,
   ON_RFP_DEADLINE_CHANGE,
   ON_BID_TYPE_CHANGE,
@@ -11,6 +12,15 @@ import {
   CLEAR_PO,
 } from '../';
 import Web3Service from '../../../utils/Web3Service';
+import {
+  ProcurementManagementABI,
+  ProcurementManagementAddress,
+} from '../../../assets/data/contracts';
+
+const onNameChange = name => ({
+  type: ON_NAME_CHANGE,
+  payload: { name },
+});
 
 const onRfpChange = rfp => ({
   type: ON_RFP_CHANGE,
@@ -56,30 +66,24 @@ const clearPO = () => ({
   type: CLEAR_PO,
 });
 
-const sendPO = (buyerAddress, rfp, rfpDeadline, bidType, sellersAddresses) => {
+const sendPO = (
+  name,
+  buyerAddress,
+  rfp,
+  rfpDeadline,
+  bidType,
+  sellersAddresses
+) => {
   return async dispatch => {
     dispatch(onSendPOBegin());
 
     try {
       const web3 = new Web3Service();
-      const PMContract = new web3.eth.Contract(
-        JSON.parse(`
-          [{"constant":false,"inputs":[{"name":"buyer","type":"address"},
-          {"name":"rfp","type":"string"},{"name":"rfpDeadline","type":"string"},
-          {"name":"bidType","type":"string"},{"name":"sellers","type":"address[]"
-          }],"name":"createPurchaseOrder","outputs":[],"payable":false,
-          "stateMutability":"nonpayable","type":"function"},{"constant":true,
-          "inputs":[],"name":"getPurchaseOrders","outputs":[{"components":[
-          {"name":"buyer","type":"address"},{"name":"rfp","type":"string"},
-          {"name":"rfpDeadline","type":"string"},{"name":"bidType","type":
-          "string"},{"name":"sellers","type":"address[]"},{"name":"fulfilled",
-          "type":"bool"}],"name":"","type":"tuple[]"}],"payable":false,
-          "stateMutability":"view","type":"function"}]
-        `)
-      );
-      PMContract.address = '0x0913CfA4B6FC51789d5F4E9e1f06D0644BF38D12';
+      const PMContract = new web3.eth.Contract(ProcurementManagementABI);
+      PMContract.address = ProcurementManagementAddress;
       const tx = await PMContract.methods
         .createPurchaseOrder(
+          name,
           buyerAddress,
           rfp,
           moment(rfpDeadline).format('YYYY-MM-DD hh:mm a'),
@@ -96,6 +100,7 @@ const sendPO = (buyerAddress, rfp, rfpDeadline, bidType, sellersAddresses) => {
 };
 
 export {
+  onNameChange,
   onRfpChange,
   onRfpDeadlineChange,
   onBidTypeChange,

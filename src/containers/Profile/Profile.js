@@ -10,6 +10,7 @@ import { setDefaultAccount } from '../../store/actions/Navbar/NavbarActions';
 import { AccountTypeSpan } from './ProfileStyles';
 import CreatePOModal from '../../components/CreatePOModal/CreatePOModal';
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
+import { getPOs } from '../../store/actions/Profile/ProfileActions';
 
 class Profile extends Component {
   componentDidMount() {
@@ -22,6 +23,8 @@ class Profile extends Component {
       )[0];
       this.props.setDefaultAccount(account);
     }
+
+    this.props.getPOs();
   }
 
   componentDidUpdate(prevProps) {
@@ -33,11 +36,16 @@ class Profile extends Component {
   }
 
   render() {
-    const { loading, defaultAccount } = this.props;
+    const {
+      loading,
+      createPOLoading,
+      getPOsResult,
+      defaultAccount,
+    } = this.props;
 
     return (
       <React.Fragment>
-        {loading && <LoadingSpinner />}
+        {(loading || createPOLoading) && <LoadingSpinner />}
         {defaultAccount && (
           <div className="container">
             <div className="h3">
@@ -52,6 +60,41 @@ class Profile extends Component {
 
             {defaultAccount.type === 'buyer' && (
               <React.Fragment>
+                {getPOsResult && getPOsResult.length > 0 ? (
+                  <table className="table">
+                    <thead className="thead-dark">
+                      <tr>
+                        <th>Order Name</th>
+                        <th>Status</th>
+                        <th>Deadline</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {getPOsResult.map((po, index) => {
+                        return (
+                          <tr key={index}>
+                            <td>{po.name}</td>
+                            <td>
+                              {po.fulfilled ? (
+                                <span className="badge badge-success">
+                                  Fulfilled
+                                </span>
+                              ) : (
+                                <span className="badge badge-danger">
+                                  Not Fulfilled
+                                </span>
+                              )}
+                            </td>
+                            <td>{po.rfpDeadline}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                ) : (
+                  <div></div>
+                )}
+
                 <button
                   className="btn btn-primary"
                   data-toggle="modal"
@@ -74,15 +117,21 @@ Profile.propTypes = {
   setDefaultAccount: PropTypes.func,
   history: PropTypes.object,
   loading: PropTypes.bool,
+  getPOs: PropTypes.func,
+  createPOLoading: PropTypes.bool,
+  getPOsResult: PropTypes.array,
 };
 
 const mapStateToProps = state => ({
-  loading: state.createPOModalState.loading,
+  createPOLoading: state.createPOModalState.loading,
   defaultAccount: state.navbarState.defaultAccount,
+  loading: state.profileState.loading,
+  getPOsResult: state.profileState.result,
 });
 
 const mapDispatchToProps = dispatch => ({
   setDefaultAccount: account => dispatch(setDefaultAccount(account)),
+  getPOs: () => dispatch(getPOs()),
 });
 
 export default connect(

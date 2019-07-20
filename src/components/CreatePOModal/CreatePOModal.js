@@ -5,9 +5,11 @@ import { connect } from 'react-redux';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Swal from 'sweetalert2';
+import $ from 'jquery';
 
 import accounts from '../../assets/data/data';
 import {
+  onNameChange,
   onRfpChange,
   onRfpDeadlineChange,
   onBidTypeChange,
@@ -26,7 +28,9 @@ class CreatePOModal extends Component {
 
   async componentDidUpdate(prevProps) {
     const { result, error } = this.props;
+
     if (result && prevProps.result !== result) {
+      $(`#${this.props.id}`).modal('hide');
       await Swal.fire({
         type: 'success',
         title: 'Order Created Successfuly!',
@@ -65,6 +69,7 @@ class CreatePOModal extends Component {
   submitCreatePO = e => {
     e.preventDefault();
     const {
+      name,
       defaultAccount,
       rfp,
       rfpDeadline,
@@ -72,6 +77,7 @@ class CreatePOModal extends Component {
       sellersAddresses,
     } = this.props;
     this.props.sendPO(
+      name,
       defaultAccount.address,
       rfp,
       rfpDeadline,
@@ -83,10 +89,12 @@ class CreatePOModal extends Component {
   render() {
     const {
       defaultAccount,
+      name,
       rfp,
       rfpDeadline,
       bidType,
       sellersAddresses,
+      onNameChange,
       onRfpChange,
       onRfpDeadlineChange,
       onBidTypeChange,
@@ -116,6 +124,19 @@ class CreatePOModal extends Component {
             </div>
             <div className="modal-body">
               <form>
+                <div className="form-group">
+                  <label htmlFor="orderName" className="col-form-label">
+                    Name:
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="orderName"
+                    value={name}
+                    autoComplete="no-password"
+                    onChange={e => onNameChange(e.target.value)}
+                  />
+                </div>
                 <div className="form-group">
                   <label htmlFor="buyerAddress" className="col-form-label">
                     Buyer Address:
@@ -221,10 +242,12 @@ class CreatePOModal extends Component {
 CreatePOModal.propTypes = {
   id: PropTypes.string,
   defaultAccount: PropTypes.object,
+  name: PropTypes.string,
   rfp: PropTypes.string,
   rfpDeadline: PropTypes.instanceOf(Date),
   bidType: PropTypes.string,
   sellersAddresses: PropTypes.array,
+  onNameChange: PropTypes.func,
   onRfpChange: PropTypes.func,
   onRfpDeadlineChange: PropTypes.func,
   onBidTypeChange: PropTypes.func,
@@ -238,6 +261,7 @@ CreatePOModal.propTypes = {
 
 const mapStateToProps = state => ({
   defaultAccount: state.navbarState.defaultAccount,
+  name: state.createPOModalState.name,
   rfp: state.createPOModalState.rfp,
   rfpDeadline: state.createPOModalState.rfpDeadline,
   bidType: state.createPOModalState.bidType,
@@ -248,14 +272,17 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
+  onNameChange: name => dispatch(onNameChange(name)),
   onRfpChange: rfp => dispatch(onRfpChange(rfp)),
   onRfpDeadlineChange: rfpDeadline =>
     dispatch(onRfpDeadlineChange(rfpDeadline)),
   onBidTypeChange: bidType => dispatch(onBidTypeChange(bidType)),
   onSellersAddressesChange: sellers =>
     dispatch(onSellersAddressesChange(sellers)),
-  sendPO: (buyerAddress, rfp, rfpDeadline, bidType, sellersAddresses) =>
-    dispatch(sendPO(buyerAddress, rfp, rfpDeadline, bidType, sellersAddresses)),
+  sendPO: (name, buyerAddress, rfp, rfpDeadline, bidType, sellersAddresses) =>
+    dispatch(
+      sendPO(name, buyerAddress, rfp, rfpDeadline, bidType, sellersAddresses)
+    ),
   clearPO: () => dispatch(clearPO()),
 });
 

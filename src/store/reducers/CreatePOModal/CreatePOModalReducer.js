@@ -1,4 +1,5 @@
 import {
+  ON_NAME_CHANGE,
   ON_RFP_CHANGE,
   ON_RFP_DEADLINE_CHANGE,
   ON_BID_TYPE_CHANGE,
@@ -10,6 +11,7 @@ import {
 } from '../../actions';
 
 const initialState = {
+  name: '',
   rfp: '',
   rfpDeadline: new Date(),
   bidType: 'public',
@@ -21,6 +23,11 @@ const initialState = {
 
 const createPOModalReducer = (state = initialState, action) => {
   switch (action.type) {
+    case ON_NAME_CHANGE:
+      return {
+        ...state,
+        name: action.payload.name,
+      };
     case ON_RFP_CHANGE:
       return {
         ...state,
