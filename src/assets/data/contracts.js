@@ -61,6 +61,29 @@ export const ProcurementManagementABI = [
     stateMutability: 'view',
     type: 'function',
   },
+  {
+    constant: true,
+    inputs: [{ name: 'seller', type: 'address' }],
+    name: 'getPurchaseOrdersBySeller',
+    outputs: [
+      {
+        components: [
+          { name: 'name', type: 'string' },
+          { name: 'buyer', type: 'address' },
+          { name: 'rfp', type: 'string' },
+          { name: 'rfpDeadline', type: 'string' },
+          { name: 'bidType', type: 'string' },
+          { name: 'sellers', type: 'address[]' },
+          { name: 'fulfilled', type: 'bool' },
+        ],
+        name: '',
+        type: 'tuple[]',
+      },
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
 ];
 
 export const ProcurementManagementAddress =

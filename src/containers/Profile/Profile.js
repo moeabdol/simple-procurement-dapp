@@ -10,10 +10,13 @@ import { setDefaultAccount } from '../../store/actions/Navbar/NavbarActions';
 import { AccountTypeSpan } from './ProfileStyles';
 import CreatePOModal from '../../components/CreatePOModal/CreatePOModal';
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
-import { getBuyerPOs } from '../../store/actions/Profile/ProfileActions';
+import {
+  getBuyerPOs,
+  getSellerPOs,
+} from '../../store/actions/Profile/ProfileActions';
 
 class Profile extends Component {
-  async componentDidMount() {
+  componentDidMount() {
     const address = this.props.match.params.address;
     const { defaultAccount } = this.props;
 
@@ -21,14 +24,19 @@ class Profile extends Component {
       const account = accounts.filter(
         account => account.address === address
       )[0];
-      await this.props.setDefaultAccount(account);
+      this.props.setDefaultAccount(account);
 
-      if (account.type === 'buyer')
-        await this.props.getBuyerPOs(account.address);
+      if (account.type === 'buyer') {
+        this.props.getBuyerPOs(account.address);
+      } else if (account.type === 'seller') {
+        this.props.getSellerPOs(account.address);
+      }
     }
 
     if (defaultAccount && defaultAccount.type === 'buyer') {
       this.props.getBuyerPOs(defaultAccount.address);
+    } else if (defaultAccount && defaultAccount.type === 'seller') {
+      this.props.getSellerPOs(defaultAccount.address);
     }
   }
 
@@ -37,13 +45,19 @@ class Profile extends Component {
 
     if (defaultAccount && prevProps.defaultAccount !== defaultAccount) {
       this.props.history.push(`/profile/${defaultAccount.address}`);
-      if (defaultAccount.type === 'buyer')
+      if (defaultAccount.type === 'buyer') {
         this.props.getBuyerPOs(defaultAccount.address);
+      } else if (defaultAccount.type === 'seller') {
+        this.props.getSellerPOs(defaultAccount.address);
+      }
     }
 
     if (modalPOResult && prevProps.modalPOResult !== modalPOResult) {
-      if (defaultAccount.type === 'buyer')
+      if (defaultAccount.type === 'buyer') {
         this.props.getBuyerPOs(defaultAccount.address);
+      } else if (defaultAccount.type === 'seller') {
+        this.props.getSellerPOs(defaultAccount.address);
+      }
     }
   }
 
@@ -70,43 +84,43 @@ class Profile extends Component {
               Address: {defaultAccount.address}
             </div>
 
+            {getPOsResult && getPOsResult.length > 0 ? (
+              <table className="table">
+                <thead className="thead-dark">
+                  <tr>
+                    <th>Order Name</th>
+                    <th>Status</th>
+                    <th>Deadline</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {getPOsResult.map((po, index) => {
+                    return (
+                      <tr key={index}>
+                        <td>{po.name}</td>
+                        <td>
+                          {po.fulfilled ? (
+                            <span className="badge badge-success">
+                              Fulfilled
+                            </span>
+                          ) : (
+                            <span className="badge badge-danger">
+                              Not Fulfilled
+                            </span>
+                          )}
+                        </td>
+                        <td>{po.rfpDeadline}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            ) : (
+              <div className="h5 text-center m-5">No Orders!</div>
+            )}
+
             {defaultAccount.type === 'buyer' && (
               <React.Fragment>
-                {getPOsResult && getPOsResult.length > 0 ? (
-                  <table className="table">
-                    <thead className="thead-dark">
-                      <tr>
-                        <th>Order Name</th>
-                        <th>Status</th>
-                        <th>Deadline</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {getPOsResult.map((po, index) => {
-                        return (
-                          <tr key={index}>
-                            <td>{po.name}</td>
-                            <td>
-                              {po.fulfilled ? (
-                                <span className="badge badge-success">
-                                  Fulfilled
-                                </span>
-                              ) : (
-                                <span className="badge badge-danger">
-                                  Not Fulfilled
-                                </span>
-                              )}
-                            </td>
-                            <td>{po.rfpDeadline}</td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                ) : (
-                  <div className="h5 text-center m-5">No Orders!</div>
-                )}
-
                 <button
                   className="btn btn-primary"
                   data-toggle="modal"
@@ -133,6 +147,7 @@ Profile.propTypes = {
   createPOLoading: PropTypes.bool,
   getPOsResult: PropTypes.array,
   modalPOResult: PropTypes.object,
+  getSellerPOs: PropTypes.func,
 };
 
 const mapStateToProps = state => ({
@@ -146,6 +161,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   setDefaultAccount: account => dispatch(setDefaultAccount(account)),
   getBuyerPOs: buyerAddress => dispatch(getBuyerPOs(buyerAddress)),
+  getSellerPOs: sellerAddress => dispatch(getSellerPOs(sellerAddress)),
 });
 
 export default connect(
