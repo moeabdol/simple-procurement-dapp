@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { getPOs } from '../../store/actions/Profile/ProfileActions';
+import { getPOs } from '../../store/actions/Orders/OrdersActions';
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
 
 class Orders extends Component {
@@ -48,7 +48,7 @@ class Orders extends Component {
             </tbody>
           </table>
         ) : (
-          <div className="h5 text-center">No Data!</div>
+          <div className="h5 text-center m-5">No Orders!</div>
         )}
       </div>
     );
@@ -62,9 +62,9 @@ Orders.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  loading: state.profileState.loading,
-  result: state.profileState.result,
-  error: state.profileState.error,
+  loading: state.ordersState.loading,
+  result: state.ordersState.result,
+  error: state.ordersState.error,
 });
 
 const mapDispatchToProps = dispatch => ({

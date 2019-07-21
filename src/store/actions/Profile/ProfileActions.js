@@ -1,38 +1,44 @@
-import { GET_POS_BEGIN, GET_POS_SUCCESS, GET_POS_FAILURE } from '../';
+import {
+  GET_BUYER_POS_BEGIN,
+  GET_BUYER_POS_SUCCESS,
+  GET_BUYER_POS_FAILURE,
+} from '../';
 import Web3Service from '../../../utils/Web3Service';
 import {
   ProcurementManagementABI,
   ProcurementManagementAddress,
 } from '../../../assets/data/contracts';
 
-const getPOsBegin = () => ({
-  type: GET_POS_BEGIN,
+const getBuyerPOsBegin = () => ({
+  type: GET_BUYER_POS_BEGIN,
 });
 
-const getPOsSuccess = result => ({
-  type: GET_POS_SUCCESS,
+const getBuyerPOsSuccess = result => ({
+  type: GET_BUYER_POS_SUCCESS,
   payload: { result },
 });
 
-const getPOsFailure = error => ({
-  type: GET_POS_FAILURE,
+const getBuyerPOsFailure = error => ({
+  type: GET_BUYER_POS_FAILURE,
   payload: { error },
 });
 
-const getPOs = () => {
+const getBuyerPOs = buyerAddress => {
   return async dispatch => {
-    dispatch(getPOsBegin());
+    dispatch(getBuyerPOsBegin());
 
     try {
       const web3 = new Web3Service();
       const PMContract = new web3.eth.Contract(ProcurementManagementABI);
       PMContract.address = ProcurementManagementAddress;
-      const res = await PMContract.methods.getPurchaseOrders().call();
-      dispatch(getPOsSuccess(res));
+      const res = await PMContract.methods
+        .getPurchaseOrdersByBuyer(buyerAddress)
+        .call();
+      dispatch(getBuyerPOsSuccess(res));
     } catch (error) {
-      dispatch(getPOsFailure(error));
+      dispatch(getBuyerPOsFailure(error));
     }
   };
 };
 
-export { getPOs };
+export { getBuyerPOs };

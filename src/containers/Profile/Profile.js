@@ -10,10 +10,10 @@ import { setDefaultAccount } from '../../store/actions/Navbar/NavbarActions';
 import { AccountTypeSpan } from './ProfileStyles';
 import CreatePOModal from '../../components/CreatePOModal/CreatePOModal';
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
-import { getPOs } from '../../store/actions/Profile/ProfileActions';
+import { getBuyerPOs } from '../../store/actions/Profile/ProfileActions';
 
 class Profile extends Component {
-  componentDidMount() {
+  async componentDidMount() {
     const address = this.props.match.params.address;
     const { defaultAccount } = this.props;
 
@@ -21,10 +21,15 @@ class Profile extends Component {
       const account = accounts.filter(
         account => account.address === address
       )[0];
-      this.props.setDefaultAccount(account);
+      await this.props.setDefaultAccount(account);
+
+      if (account.type === 'buyer')
+        await this.props.getBuyerPOs(account.address);
     }
 
-    this.props.getPOs();
+    if (defaultAccount && defaultAccount.type === 'buyer') {
+      this.props.getBuyerPOs(defaultAccount.address);
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -32,6 +37,8 @@ class Profile extends Component {
 
     if (defaultAccount && prevProps.defaultAccount !== defaultAccount) {
       this.props.history.push(`/profile/${defaultAccount.address}`);
+      if (defaultAccount.type === 'buyer')
+        this.props.getBuyerPOs(defaultAccount.address);
     }
   }
 
@@ -92,7 +99,7 @@ class Profile extends Component {
                     </tbody>
                   </table>
                 ) : (
-                  <div></div>
+                  <div className="h5 text-center m-5">No Orders!</div>
                 )}
 
                 <button
@@ -117,7 +124,7 @@ Profile.propTypes = {
   setDefaultAccount: PropTypes.func,
   history: PropTypes.object,
   loading: PropTypes.bool,
-  getPOs: PropTypes.func,
+  getBuyerPOs: PropTypes.func,
   createPOLoading: PropTypes.bool,
   getPOsResult: PropTypes.array,
 };
@@ -131,7 +138,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   setDefaultAccount: account => dispatch(setDefaultAccount(account)),
-  getPOs: () => dispatch(getPOs()),
+  getBuyerPOs: buyerAddress => dispatch(getBuyerPOs(buyerAddress)),
 });
 
 export default connect(
