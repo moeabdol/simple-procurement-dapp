@@ -9,6 +9,7 @@ import accounts from '../../assets/data/data';
 import { setDefaultAccount } from '../../store/actions/Navbar/NavbarActions';
 import { AccountTypeSpan } from './ProfileStyles';
 import CreatePOModal from '../../components/CreatePOModal/CreatePOModal';
+import CreateProposalModal from '../../components/CreateProposalModal/CreateProposalModal';
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
 import {
   getBuyerPOs,
@@ -91,6 +92,7 @@ class Profile extends Component {
                     <th>Order Name</th>
                     <th>Status</th>
                     <th>Deadline</th>
+                    {defaultAccount.type === 'seller' && <th>Actions</th>}
                   </tr>
                 </thead>
                 <tbody>
@@ -110,6 +112,21 @@ class Profile extends Component {
                           )}
                         </td>
                         <td>{po.rfpDeadline}</td>
+                        {defaultAccount.type === 'seller' && !po.fulfilled && (
+                          <td>
+                            <button
+                              className="btn btn-sm btn-success"
+                              data-toggle="modal"
+                              data-target={`#proposalModal${po.id}`}>
+                              Respond
+                            </button>
+                            <CreateProposalModal
+                              id={`proposalModal${po.id}`}
+                              orderId={po.id}
+                              orderName={po.name}
+                            />
+                          </td>
+                        )}
                       </tr>
                     );
                   })}
@@ -125,7 +142,7 @@ class Profile extends Component {
                   className="btn btn-primary"
                   data-toggle="modal"
                   data-target="#poModal">
-                  Create Purchase Order
+                  Create Order
                 </button>
                 <CreatePOModal id="poModal" />
               </React.Fragment>

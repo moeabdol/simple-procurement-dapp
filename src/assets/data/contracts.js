@@ -22,6 +22,7 @@ export const ProcurementManagementABI = [
     outputs: [
       {
         components: [
+          { name: 'id', type: 'uint256' },
           { name: 'name', type: 'string' },
           { name: 'buyer', type: 'address' },
           { name: 'rfp', type: 'string' },
@@ -29,6 +30,7 @@ export const ProcurementManagementABI = [
           { name: 'bidType', type: 'string' },
           { name: 'sellers', type: 'address[]' },
           { name: 'fulfilled', type: 'bool' },
+          { name: 'winner', type: 'address' },
         ],
         name: '',
         type: 'tuple[]',
@@ -45,6 +47,7 @@ export const ProcurementManagementABI = [
     outputs: [
       {
         components: [
+          { name: 'id', type: 'uint256' },
           { name: 'name', type: 'string' },
           { name: 'buyer', type: 'address' },
           { name: 'rfp', type: 'string' },
@@ -52,6 +55,7 @@ export const ProcurementManagementABI = [
           { name: 'bidType', type: 'string' },
           { name: 'sellers', type: 'address[]' },
           { name: 'fulfilled', type: 'bool' },
+          { name: 'winner', type: 'address' },
         ],
         name: '',
         type: 'tuple[]',
@@ -68,6 +72,7 @@ export const ProcurementManagementABI = [
     outputs: [
       {
         components: [
+          { name: 'id', type: 'uint256' },
           { name: 'name', type: 'string' },
           { name: 'buyer', type: 'address' },
           { name: 'rfp', type: 'string' },
@@ -75,6 +80,7 @@ export const ProcurementManagementABI = [
           { name: 'bidType', type: 'string' },
           { name: 'sellers', type: 'address[]' },
           { name: 'fulfilled', type: 'bool' },
+          { name: 'winner', type: 'address' },
         ],
         name: '',
         type: 'tuple[]',
@@ -82,6 +88,19 @@ export const ProcurementManagementABI = [
     ],
     payable: false,
     stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    constant: false,
+    inputs: [
+      { name: 'seller', type: 'address' },
+      { name: 'poId', type: 'uint256' },
+      { name: 'content', type: 'string' },
+    ],
+    name: 'createProposal',
+    outputs: [],
+    payable: false,
+    stateMutability: 'nonpayable',
     type: 'function',
   },
 ];
