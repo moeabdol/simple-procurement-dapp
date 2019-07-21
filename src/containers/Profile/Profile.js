@@ -33,10 +33,15 @@ class Profile extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { defaultAccount } = this.props;
+    const { defaultAccount, modalPOResult } = this.props;
 
     if (defaultAccount && prevProps.defaultAccount !== defaultAccount) {
       this.props.history.push(`/profile/${defaultAccount.address}`);
+      if (defaultAccount.type === 'buyer')
+        this.props.getBuyerPOs(defaultAccount.address);
+    }
+
+    if (modalPOResult && prevProps.modalPOResult !== modalPOResult) {
       if (defaultAccount.type === 'buyer')
         this.props.getBuyerPOs(defaultAccount.address);
     }
@@ -127,6 +132,7 @@ Profile.propTypes = {
   getBuyerPOs: PropTypes.func,
   createPOLoading: PropTypes.bool,
   getPOsResult: PropTypes.array,
+  modalPOResult: PropTypes.object,
 };
 
 const mapStateToProps = state => ({
@@ -134,6 +140,7 @@ const mapStateToProps = state => ({
   defaultAccount: state.navbarState.defaultAccount,
   loading: state.profileState.loading,
   getPOsResult: state.profileState.result,
+  modalPOResult: state.createPOModalState.result,
 });
 
 const mapDispatchToProps = dispatch => ({
